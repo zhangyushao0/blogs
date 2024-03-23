@@ -20,7 +20,7 @@ COPY ./myblog .
 RUN npm run build
 
 # 运行阶段
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 WORKDIR /app
 
 # 安装Node.js
