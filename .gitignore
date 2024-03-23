@@ -1,0 +1,7 @@
+blog/
+blogserver/target
+myblog/build
+myblog/dist
+myblog/node_modules
+myblog/.svelte-kit
+myblog/package
