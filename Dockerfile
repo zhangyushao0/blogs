@@ -20,21 +20,17 @@ COPY ./myblog .
 RUN npm run build
 
 # 运行阶段
-FROM debian:bookworm-slim
+FROM oven/bun:alpine
 WORKDIR /app
-
-# 安装Node.js
-RUN apt-get update && apt-get install -y nodejs npm && rm -rf /var/lib/apt/lists/*
 
 # 从构建阶段复制构建产物
 COPY --from=svelte-builder /app/build ./build
 COPY --from=svelte-builder /app/package.json ./package.json
 COPY --from=svelte-builder /app/package-lock.json ./package-lock.json
-RUN npm ci --production
+RUN bun install --frozen-lockfile
 
 # 从Rust构建阶段复制编译好的二进制文件
 COPY --from=rust-builder /usr/src/myapp/blogserver/target/release/blogserver ./blogserver
-RUN chmod +x ./blogserver
 
 # 设置环境变量
 ENV NODE_ENV=production
@@ -42,4 +38,4 @@ ENV HOST=0.0.0.0
 ENV PORT=8000
 
 # 启动命令
-CMD ["sh", "-c", "./blogserver & node build"]
+CMD ["sh", "-c", "./blogserver & bun run ./build/index.js"]
